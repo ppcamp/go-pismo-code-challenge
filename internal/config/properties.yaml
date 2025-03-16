@@ -1,0 +1,17 @@
+app:
+  port: 8080
+  host: localhost
+  timeout: 10s
+
+logging:
+  http_enabled: false
+  level: info
+
+database:
+  host: localhost
+  port: 5432
+  username: postgres
+  password: pg123
+
+
+# vim: ts=2 sts=2 sw=2 et
