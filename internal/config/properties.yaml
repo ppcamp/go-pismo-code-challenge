@@ -10,8 +10,9 @@ logging:
 database:
   host: localhost
   port: 5432
-  username: postgres
+  username: pguser
   password: pg123
+  db: pismo 
 
 
 # vim: ts=2 sts=2 sw=2 et
