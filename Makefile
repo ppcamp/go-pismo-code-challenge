@@ -84,6 +84,12 @@ endif
 IMAGE=ppcamp/go-microservice-authentication:${TAG}
 
 
+up: ## Run docker compose
+	docker compose up -d
+
+down: ## Remove docker compose containers
+	docker compose down
+
 run: ## **Run** the server
 	go run cmd/main.go
 
