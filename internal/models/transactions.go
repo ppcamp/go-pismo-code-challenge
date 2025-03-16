@@ -1,6 +1,6 @@
 package models
 
-type Transactions struct {
+type Transaction struct {
 	Id          int64
 	AccountId   int64
 	OperationId int64
