@@ -11,8 +11,8 @@ import (
 )
 
 type Account interface {
-	Create(context.Context, *models.Account) error
-	Get(context.Context, int64) (*models.Account, error)
+	Create(ctx context.Context, account *models.Account) error
+	Get(ctx context.Context, id int64) (*models.Account, error)
 }
 
 type implAccount struct{ conn db.Driver }
