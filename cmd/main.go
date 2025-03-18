@@ -7,6 +7,9 @@ import (
 
 	"github.com/ppcamp/go-pismo-code-challenge/internal/config"
 	"github.com/ppcamp/go-pismo-code-challenge/internal/http"
+	"github.com/ppcamp/go-pismo-code-challenge/internal/http/handlers"
+	"github.com/ppcamp/go-pismo-code-challenge/internal/repositories/db"
+	"github.com/ppcamp/go-pismo-code-challenge/internal/services"
 	"github.com/ppcamp/go-pismo-code-challenge/pkg/utils/logging"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -26,7 +29,22 @@ func main() {
 		logrus.WithError(err).Fatal("fail to configure logging: %w", err)
 	}
 
-	err = http.Serve(ctx)
+	db, err := db.New(db.Params{
+		Host:     viper.GetString(config.DatabaseHost),
+		Port:     viper.GetInt(config.DatabasePort),
+		Driver:   viper.GetString(config.DatabaseHost),
+		User:     viper.GetString(config.DatabaseDriver),
+		Password: viper.GetString(config.DatabasePassword),
+	})
+	if err != nil {
+		logrus.WithError(err).Fatal("fail to connect to db: %w", err)
+	}
+
+	h := &handlers.Handler{
+		Account: services.NewAccountService(db),
+	}
+
+	err = http.Serve(ctx, h)
 	if err == nil {
 		logrus.Info("Server shutdown successfully")
 	} else {
