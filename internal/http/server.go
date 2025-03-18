@@ -7,18 +7,19 @@ import (
 	"net/http"
 
 	"github.com/ppcamp/go-pismo-code-challenge/internal/config"
+	"github.com/ppcamp/go-pismo-code-challenge/internal/http/handlers"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
-func Serve(ctx context.Context) error {
+func Serve(ctx context.Context, h *handlers.Handler) error {
 	addr := fmt.Sprintf("%s:%d",
 		viper.GetString(config.AppHost),
 		viper.GetInt(config.AppPort))
 
 	svr := http.Server{
 		Addr:        addr,
-		Handler:     Handlers(),
+		Handler:     Routes(h),
 		BaseContext: func(listener net.Listener) context.Context { return ctx },
 	}
 

@@ -5,16 +5,17 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/ppcamp/go-pismo-code-challenge/internal/config"
+	"github.com/ppcamp/go-pismo-code-challenge/internal/http/handlers"
 	"github.com/spf13/viper"
 )
 
-func Handlers() http.Handler {
+func Routes(h *handlers.Handler) http.Handler {
 	gin.SetMode(gin.ReleaseMode)
 
 	r := gin.New()
 
 	registerMiddlewares(r)
-	registerAccountingRoutes(r)
+	registerAccountRoutes(r, h)
 
 	r.GET("/health", healthCheckHandler)
 
@@ -33,10 +34,11 @@ func healthCheckHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 }
 
-func registerAccountingRoutes(r *gin.Engine) {
+func registerAccountRoutes(r *gin.Engine, h *handlers.Handler) {
+	acct := handlers.NewAccountHandler(h)
+
 	group := r.Group("/accounts")
 
-	group.GET("{:id}", func(c *gin.Context) {})
-
-	group.POST("", func(c *gin.Context) {})
+	group.GET("{:id}", acct.Get)
+	group.POST("", acct.Create)
 }
