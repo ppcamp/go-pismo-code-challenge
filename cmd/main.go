@@ -29,7 +29,7 @@ func main() {
 		logrus.WithError(err).Fatal("fail to configure logging: %w", err)
 	}
 
-	db, err := db.New(db.Params{
+	db, err := db.New(ctx, db.Params{
 		Host:     viper.GetString(config.DatabaseHost),
 		Port:     viper.GetInt(config.DatabasePort),
 		Driver:   viper.GetString(config.DatabaseHost),

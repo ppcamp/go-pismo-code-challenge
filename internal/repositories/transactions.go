@@ -21,7 +21,7 @@ func (t *implTransactions) Create(ctx context.Context, data *models.Transaction)
 		INSERT INTO transactions (account_id, operation_type_id, amount) 
 		VALUES ($1, $2, $3)`
 
-	_, err := t.conn.ExecContext(ctx, query, data.AccountId, data.OperationId, data.Amount)
+	err := t.conn.Exec(ctx, query, data.AccountId, data.OperationId, data.Amount)
 	if err != nil {
 		return errutils.Error{Base: db.ErrDriverError, Wrapped: err}
 	}

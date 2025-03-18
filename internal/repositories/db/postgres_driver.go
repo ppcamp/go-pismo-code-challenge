@@ -2,8 +2,10 @@ package db
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
+
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type Params struct {
@@ -17,8 +19,14 @@ func (p *Params) ConnStr() string {
 	return fmt.Sprintf("%s:%d@%s:%s", p.Host, p.Port, p.User, p.Password)
 }
 
-func New(params Params) (DB, error) {
-	conn, err := sql.Open(params.Driver, params.ConnStr())
+// New implements a postgres driver with connection pooling.
+//
+// This is concurrent safe pooling
+func New(ctx context.Context, params Params) (DB, error) {
+	// The main reason to use pgx instead of the default sql driver is due to
+	// connection pooling, which will guarantee that we don't open too many
+	// connections, neither keep them alive when no service is using.
+	conn, err := pgxpool.New(ctx, params.ConnStr())
 	if err != nil {
 		return nil, fmt.Errorf("db: %w", err)
 	}
@@ -27,40 +35,48 @@ func New(params Params) (DB, error) {
 }
 
 type implDriver struct {
-	conn *sql.DB
+	conn *pgxpool.Pool
 	*implBasicDriver
 }
 
-func (i *implDriver) Ping() error  { return i.conn.Ping() }
-func (i *implDriver) Close() error { return i.conn.Close() }
+func (i *implDriver) Ping(ctx context.Context) error { return i.conn.Ping(ctx) }
+
+func (i *implDriver) Close(ctx context.Context) error {
+	i.conn.Close()
+	return nil
+}
 
 // BeginTx initializes a new sql transaction.
 // This, however, should not be handled manually. Check for
 // [github.com/ppcamp/go-pismo-code-challenge/internal/repositories/db.]
 func (i *implDriver) BeginTx(ctx context.Context) (DriverTransaction, error) {
-	tx, err := i.conn.BeginTx(ctx, nil)
+	tx, err := i.conn.Begin(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	return &implTransactionDriver{tx}, nil
+	return &implTransactionDriver{tx, &implBasicDriver{i.conn}}, nil
 }
 
-type implTransactionDriver struct{ *sql.Tx }
-
-func (i *implTransactionDriver) Commit() error   { return i.Tx.Commit() }
-func (i *implTransactionDriver) Rollback() error { return i.Tx.Rollback() }
-
-type implBasicDriver struct{ conn *sql.DB }
-
-func (i *implBasicDriver) ExecContext(ctx context.Context, query string, args ...any) (sql.Result, error) {
-	return i.conn.ExecContext(ctx, query, args...)
+type implTransactionDriver struct {
+	Tx pgx.Tx
+	*implBasicDriver
 }
 
-func (i *implBasicDriver) QueryContext(ctx context.Context, query string, args ...any) (*sql.Rows, error) {
-	return i.conn.QueryContext(ctx, query, args...)
+func (i *implTransactionDriver) Commit(ctx context.Context) error   { return i.Tx.Commit(ctx) }
+func (i *implTransactionDriver) Rollback(ctx context.Context) error { return i.Tx.Rollback(ctx) }
+
+type implBasicDriver struct{ conn *pgxpool.Pool }
+
+func (i *implBasicDriver) Exec(ctx context.Context, query string, args ...any) error {
+	_, err := i.conn.Exec(ctx, query, args...)
+	return err
 }
 
-func (i *implBasicDriver) QueryRowContext(ctx context.Context, query string, args ...any) *sql.Row {
-	return i.conn.QueryRowContext(ctx, query, args...)
+func (i *implBasicDriver) Query(ctx context.Context, query string, args ...any) (Rows, error) {
+	return i.conn.Query(ctx, query, args...)
+}
+
+func (i *implBasicDriver) QueryRow(ctx context.Context, query string, args ...any) Row {
+	return i.conn.QueryRow(ctx, query, args...)
 }

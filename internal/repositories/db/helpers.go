@@ -20,14 +20,14 @@ func Transaction(ctx context.Context, conn DB, cb func(ctx context.Context, db D
 		}
 
 		if err != nil {
-			errTx := tx.Rollback()
+			errTx := tx.Rollback(ctx)
 			if errTx != nil {
 				err = fmt.Errorf("fail to rollback: %w: %w", errTx, err)
 			}
 			return
 		}
 
-		err = tx.Commit()
+		err = tx.Commit(ctx)
 	}()
 
 	return
