@@ -1,5 +1,14 @@
 default: help
 
+
+# DB config for local development
+PG_USER?=pguser
+PG_PASSWORD?=pg123
+PG_DATABASE?=pismo
+PG_HOST?=localhost
+PG_PORT?=5432
+PG_CONN_STRING="postgresql://${PG_USER}:${PG_PASSWORD}@${PG_HOST}:${PG_PORT}/${PG_DATABASE}?sslmode=disable&application_name=migratecli"
+
 .PHONY: run
 .PHONY: help
 .PHONY: build
@@ -7,7 +16,6 @@ default: help
 .PHONY: migrate
 .PHONY: create_migration
 .PHONY: revert_migrations
-.PHONY: generate
 .PHONY: setup_dev
 
 # Inner vars
@@ -85,10 +93,10 @@ IMAGE=ppcamp/go-microservice-authentication:${TAG}
 
 
 up: ## Run docker compose
-	docker compose up -d
+	docker compose --file tools/docker-compose.yaml up -d  
 
 down: ## Remove docker compose containers
-	docker compose down
+	docker compose --file tools/docker-compose.yaml down -v
 
 run: ## **Run** the server
 	go run cmd/main.go
@@ -105,39 +113,29 @@ lint: ## Run *linters* to this project. Remember to run `make setup_dev`
 
 docker: ## Create [docker] image
 	@echo "Building ${IMAGE}"
-	@docker build --no-cache -f Dockerfile -t ${IMAGE} .
+	docker build --no-cache -f Dockerfile -t ${IMAGE} .
 
 
 migrate: ## Run migrations created with `make create_migration`. Remember to `make setup_dev`
 	@echo "Running migrations"
-	@migrate -path migrations -database "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:5432/${POSTGRES_DATABASE}?sslmode=disable&application_name=authmigration" -verbose up
+	migrate -path migrations -database ${PG_CONN_STRING} -verbose up
 
 
 create_migration: ## Create a new migration, e.g `name=teste make create_migration`. Remember to `make setup_dev`
 	@echo "Creating migration"
-	@migrate create -ext sql -dir migrations -seq ${name}
+	migrate create -ext sql -dir migrations -seq ${name}
 
 
 revert_migrations: ## Revert a given migration, e.g `N=2 make revert_migrations`, by default 1. Remember to `make setup_dev`
 	@echo "Reverting migrations"
-	@migrate -path migrations -database "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:5432/${POSTGRES_DATABASE}?sslmode=disable&application_name=authmigration" -verbose down ${N}
-
-
-generate: ## Create [golang] protos
-	@echo "Generating protos"
-	@echo " - Generating messages"
-	@protoc --go_out=. protos/*.proto
-	@echo " - Generating services"
-	@protoc --go-grpc_out=. protos/*.proto
+	migrate -path migrations -database ${PG_CONN_STRING} -verbose down ${N}
 
 
 setup_dev: ## Install _dev_ dependencies
 	@echo "Installing go-migrate"
-	@go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+	go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 	@echo "Installing linters"
-	@curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.64.7
-
-
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.64.7
 
 help:
 	@printf "$(FF) Available methods: $(LD)\n\n"
