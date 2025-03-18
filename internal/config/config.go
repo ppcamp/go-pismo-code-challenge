@@ -15,6 +15,7 @@ const (
 
 // Database related viper identifiers
 const (
+	DatabaseDriver   = "database.driver"
 	DatabaseHost     = "database.host"
 	DatabasePort     = "database.port"
 	DatabaseUsername = "database.username"
