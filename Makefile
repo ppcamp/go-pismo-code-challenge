@@ -11,10 +11,7 @@ PG_CONN_STRING="postgresql://${PG_USER}:${PG_PASSWORD}@${PG_HOST}:${PG_PORT}/${P
 
 # Metrics
 # https://pkg.go.dev/go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetrichttp#pkg-overview
-OTEL_EXPORTER_OTLP_ENDPOINT?="http://localhost:4318"
-OTEL_EXPORTER_OTLP_METRICS_ENDPOINT?="http://localhost:4318/v1/metrics"
-OTEL_EXPORTER_OTLP_LOGS_ENDPOINT?="http://localhost:4318/v1/metrics"
-OTEL_EXPORTER_OTLP_TRACES_ENDPOINT?="http://localhost:4318/v1/traces"
+export OTEL_EXPORTER_OTLP_ENDPOINT?=http://localhost:4318
 
 .PHONY: run
 .PHONY: help
