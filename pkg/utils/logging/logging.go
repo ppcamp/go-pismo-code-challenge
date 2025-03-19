@@ -7,16 +7,14 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func SetupLogrus(lvl string) error {
+func LogrusGlobal(lvl string) error {
 	level, err := logrus.ParseLevel(lvl)
 	if err != nil {
 		return fmt.Errorf("fail to parse log level: %w", err)
 	}
 
 	logrus.SetLevel(level)
-	logrus.SetFormatter(&logrus.JSONFormatter{
-		TimestampFormat: time.DateTime,
-	})
+	logrus.SetFormatter(&logrus.JSONFormatter{TimestampFormat: time.DateTime})
 
 	return nil
 }

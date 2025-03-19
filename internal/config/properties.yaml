@@ -2,6 +2,7 @@ app:
   port: 8080
   host: localhost
   timeout: 10s
+  name: "go-pismo-challenge"
   cors:
     allowed_origins:
       - http://localhost:8080

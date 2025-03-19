@@ -2,6 +2,7 @@ package config
 
 // App related viper identifiers
 const (
+	AppName               = "app.name"
 	AppPort               = "app.port"
 	AppHost               = "app.host"
 	AppShutdownTimeout    = "app.timeout"

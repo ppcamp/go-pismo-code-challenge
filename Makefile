@@ -9,6 +9,13 @@ PG_HOST?=localhost
 PG_PORT?=5432
 PG_CONN_STRING="postgresql://${PG_USER}:${PG_PASSWORD}@${PG_HOST}:${PG_PORT}/${PG_DATABASE}?sslmode=disable&application_name=migratecli"
 
+# Metrics
+# https://pkg.go.dev/go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetrichttp#pkg-overview
+OTEL_EXPORTER_OTLP_ENDPOINT?="http://localhost:4318"
+OTEL_EXPORTER_OTLP_METRICS_ENDPOINT?="http://localhost:4318/v1/metrics"
+OTEL_EXPORTER_OTLP_LOGS_ENDPOINT?="http://localhost:4318/v1/metrics"
+OTEL_EXPORTER_OTLP_TRACES_ENDPOINT?="http://localhost:4318/v1/traces"
+
 .PHONY: run
 .PHONY: help
 .PHONY: build

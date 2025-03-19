@@ -10,9 +10,11 @@ import (
 	"github.com/ppcamp/go-pismo-code-challenge/internal/http/handlers"
 	"github.com/ppcamp/go-pismo-code-challenge/internal/repositories/db"
 	"github.com/ppcamp/go-pismo-code-challenge/internal/services"
+	"github.com/ppcamp/go-pismo-code-challenge/pkg/metrics"
 	"github.com/ppcamp/go-pismo-code-challenge/pkg/utils/logging"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"go.opentelemetry.io/otel/log/global"
 )
 
 func main() {
@@ -24,9 +26,20 @@ func main() {
 		logrus.WithError(err).Fatal("Fail to load viper configs")
 	}
 
-	err = logging.SetupLogrus(viper.GetString(config.LoggingLevel))
+	err = metrics.Init(ctx)
 	if err != nil {
-		logrus.WithError(err).Fatal("fail to configure logging: %w", err)
+		logrus.WithError(err).Fatal("fail to initialize metrics")
+	}
+
+	err = logging.LogrusGlobal(viper.GetString(config.LoggingLevel))
+	if err != nil {
+		logrus.WithError(err).Fatal("fail to setup logger: %w", err)
+	}
+
+	appName := viper.GetString(config.AppName)
+	err = metrics.LogrusGlobal(appName, global.GetLoggerProvider())
+	if err != nil {
+		logrus.WithError(err).Fatal("fail to configure otel log: %w", err)
 	}
 
 	db, err := db.New(ctx, db.Params{
@@ -39,6 +52,7 @@ func main() {
 	if err != nil {
 		logrus.WithError(err).Fatal("fail to connect to db: %w", err)
 	}
+	defer db.Close(ctx)
 
 	h := &handlers.Handler{
 		Account: services.NewAccountService(db),
