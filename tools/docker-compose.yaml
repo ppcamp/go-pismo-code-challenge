@@ -22,5 +22,14 @@ services:
     environment: 
       - SWAGGER_JSON=/api/open_api.spec.yaml
 
+  otel:
+    # https://github.com/grafana/docker-otel-lgtm/
+    image: grafana/otel-lgtm
+    restart: always
+    ports:
+      - 3000:3000
+      - 4317:4317
+      - 4318:4318
+
 volumes:
   pgdata:
