@@ -13,7 +13,7 @@ database:
   username: pguser
   password: pg123
   db: pismo 
-  driver: postgres 
+  driver: postgresql
 
 
 # vim: ts=2 sts=2 sw=2 et

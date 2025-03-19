@@ -6,6 +6,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/sirupsen/logrus"
 )
 
 type Params struct {
@@ -15,15 +16,17 @@ type Params struct {
 	User, Password string
 }
 
-func (p *Params) ConnStr() string {
-	return fmt.Sprintf("%s:%d@%s:%s", p.Host, p.Port, p.User, p.Password)
+func (p Params) ConnStr() string {
+	return fmt.Sprintf("%s://%s:%s@%s:%d", p.Driver, p.User, p.Password, p.Host, p.Port)
 }
 
 // New implements a postgres driver with connection pooling.
 //
 // This is concurrent safe pooling
 func New(ctx context.Context, params Params) (DB, error) {
-	// The main reason to use pgx instead of the default sql driver is due to
+	logrus.WithField("connection_string", params.ConnStr()).
+		Info("Creating connection")
+	// The main reason to use pgx insteadk of the default sql driver is due to
 	// connection pooling, which will guarantee that we don't open too many
 	// connections, neither keep them alive when no service is using.
 	conn, err := pgxpool.New(ctx, params.ConnStr())

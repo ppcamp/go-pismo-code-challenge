@@ -32,8 +32,8 @@ func main() {
 	db, err := db.New(ctx, db.Params{
 		Host:     viper.GetString(config.DatabaseHost),
 		Port:     viper.GetInt(config.DatabasePort),
-		Driver:   viper.GetString(config.DatabaseHost),
-		User:     viper.GetString(config.DatabaseDriver),
+		Driver:   viper.GetString(config.DatabaseDriver),
+		User:     viper.GetString(config.DatabaseUsername),
 		Password: viper.GetString(config.DatabasePassword),
 	})
 	if err != nil {
