@@ -21,11 +21,21 @@ tags:
     description: Accounts management
   - name: transactions
     description: Transactions management
+  - name: health
+    description: System/Service related endpoints
     # externalDocs:
     #   description: Find out more about our store
     #   url: http://swagger.io
 
 paths:
+  /health:
+    get:
+      summary: Healthcheck.
+      tags:
+        - health
+      responses:
+        "200": 
+          description: Service is ok. Any other status, you must check your env.
   /accounts:
     post:
       summary: Create an account.
@@ -168,3 +178,4 @@ components:
           type: number
           format: double
           example: 10.11
+
