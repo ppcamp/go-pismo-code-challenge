@@ -14,6 +14,7 @@ services:
 
   openapi:
     image: swaggerapi/swagger-ui
+    restart: always
     ports:
       - "9090:8080"
     volumes:
