@@ -14,7 +14,8 @@ make setup_dev
 
 ## How to run?
 
-1. Type `make up`. this will startup the database in a docker environment.
+1. Type `make up`. this will startup the database and the swagger service
+in a docker environment.
 2. Type `make migrate`, this will run the `cli app` that executes the migrations
 stored in `migrations` folder.
 3. Type `make run` to run app in development mode.
