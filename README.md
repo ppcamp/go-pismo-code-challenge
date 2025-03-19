@@ -10,12 +10,14 @@ install them by typing:
 make setup_dev
 ```
 
+> See `make help` or type `make` to see available commands.
+
 ## How to run?
 
-1. Type `docker compose up`. This will:
-    - Build service image
-    - Startup the database
-    - Startup the service
+1. Type `make up`. this will startup the database in a docker environment.
+2. Type `make migrate`, this will run the `cli app` that executes the migrations
+stored in `migrations` folder.
+3. Type `make run` to run app in development mode.
 
-To run in development mode, just type `make run`, see `make help` or type `make`
-to see available commands.
+Alternativaly, you can run the production config: `make up_env`
+

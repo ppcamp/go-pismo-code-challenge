@@ -9,6 +9,9 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Routes define the http entry point (routes and middlewares).
+//
+// This function is also responsible to create http handlers/controllers.
 func Routes(h *handlers.Handler) http.Handler {
 	gin.SetMode(gin.ReleaseMode)
 
