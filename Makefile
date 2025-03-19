@@ -137,6 +137,9 @@ setup_dev: ## Install _dev_ dependencies
 	@echo "Installing linters"
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.64.7
 
+open_swagger: ## Open page with swagger
+	open http://localhost:9090
+
 help:
 	@printf "$(FF) Available methods: $(LD)\n\n"
     # 1. read makefile
