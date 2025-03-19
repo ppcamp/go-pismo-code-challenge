@@ -12,6 +12,7 @@ PG_CONN_STRING="postgresql://${PG_USER}:${PG_PASSWORD}@${PG_HOST}:${PG_PORT}/${P
 # Metrics
 # https://pkg.go.dev/go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetrichttp#pkg-overview
 export OTEL_EXPORTER_OTLP_ENDPOINT?=http://localhost:4318
+export SERVICE_NAME?=go-pismo-challenge
 
 .PHONY: run
 .PHONY: help
