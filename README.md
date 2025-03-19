@@ -22,3 +22,7 @@ stored in `migrations` folder.
 
 Alternativaly, you can run the production config: `make up_env`
 
+
+> Check [swagger-editor]
+
+[swagger-editor]: https://editor.swagger.io/
