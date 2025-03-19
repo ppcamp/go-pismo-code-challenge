@@ -20,6 +20,6 @@ CREATE TABLE IF NOT EXISTS pismo."transactions"(
     account_id  INT,
     operation_type_id INT,
 
-    FOREIGN KEY(account_id) REFERENCES accounts(id)
-    FOREIGN KEY(operation_type_id) REFERENCES operations_types(id)
+    FOREIGN KEY(account_id) REFERENCES pismo.accounts(id),
+    FOREIGN KEY(operation_type_id) REFERENCES pismo.operations_types(id)
 );
