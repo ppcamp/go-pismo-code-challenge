@@ -8,4 +8,6 @@ import (
 // passing a huge amount of args to HTTP server startup function.
 type Handler struct {
 	Account services.Account
+
+	Transaction services.Transaction
 }

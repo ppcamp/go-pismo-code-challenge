@@ -3,10 +3,10 @@ package http
 import (
 	"net/http"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/ppcamp/go-pismo-code-challenge/internal/config"
 	"github.com/ppcamp/go-pismo-code-challenge/internal/http/handlers"
+	"github.com/ppcamp/go-pismo-code-challenge/internal/http/middlewares"
 	"github.com/spf13/viper"
 )
 
@@ -19,29 +19,25 @@ func Routes(h *handlers.Handler) http.Handler {
 	r := gin.New()
 
 	registerMiddlewares(r)
-	registerAccountRoutes(r, h)
 
-	r.GET("/health", healthCheckHandler)
+	registerAccountRoutes(r, h)
+	registerTransactionRoutes(r, h)
+
+	r.GET("/health", handlers.HealthCheckHandler)
 
 	return r.Handler()
 }
 
 func registerMiddlewares(r *gin.Engine) {
-	r.Use(cors.New(cors.Config{
-		AllowOrigins:     viper.GetStringSlice(config.AppCorsAllowedOrigins),  // Allow specific origins
-		AllowMethods:     viper.GetStringSlice(config.AppCorsAllowedOrigins),  // Allow specific methods
-		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"}, // Allow specific headers
-		AllowCredentials: true,                                                // Allow cookies or credentials
-	}))
-	r.Use(gin.Recovery())
+	r.Use(
+		middlewares.RequestId(),
+		middlewares.Cors(),
+		gin.Recovery(),
+	)
 
 	if viper.GetBool(config.LoggingHttpEnabled) {
 		r.Use(gin.Logger())
 	}
-}
-
-func healthCheckHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 }
 
 func registerAccountRoutes(r *gin.Engine, h *handlers.Handler) {
@@ -50,5 +46,13 @@ func registerAccountRoutes(r *gin.Engine, h *handlers.Handler) {
 	group := r.Group("/accounts")
 
 	group.GET("{:id}", acct.Get)
+	group.POST("", acct.Create)
+}
+
+func registerTransactionRoutes(r *gin.Engine, h *handlers.Handler) {
+	acct := handlers.NewTransactionHandler(h)
+
+	group := r.Group("/transactions")
+
 	group.POST("", acct.Create)
 }
