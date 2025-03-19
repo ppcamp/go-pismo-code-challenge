@@ -2,7 +2,7 @@ package config
 
 // App related viper identifiers
 const (
-	AppName               = "app.name"
+	AppName               = "service.name"
 	AppPort               = "app.port"
 	AppHost               = "app.host"
 	AppShutdownTimeout    = "app.timeout"
@@ -13,7 +13,7 @@ const (
 // Logging related viper identifiers
 const (
 	LoggingLevel       = "logging.level"
-	LoggingHttpEnabled = "logging.level"
+	LoggingHttpEnabled = "logging.http_enabled"
 )
 
 // Database related viper identifiers

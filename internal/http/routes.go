@@ -7,6 +7,7 @@ import (
 	"github.com/ppcamp/go-pismo-code-challenge/internal/config"
 	"github.com/ppcamp/go-pismo-code-challenge/internal/http/handlers"
 	"github.com/ppcamp/go-pismo-code-challenge/internal/http/middlewares"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
@@ -14,8 +15,6 @@ import (
 //
 // This function is also responsible to create http handlers/controllers.
 func Routes(h *handlers.Handler) http.Handler {
-	gin.SetMode(gin.ReleaseMode)
-
 	r := gin.New()
 
 	registerMiddlewares(r)
@@ -36,23 +35,24 @@ func registerMiddlewares(r *gin.Engine) {
 	)
 
 	if viper.GetBool(config.LoggingHttpEnabled) {
+		logrus.Debug("running gin in debug mode")
 		r.Use(gin.Logger())
 	}
 }
 
-func registerAccountRoutes(r *gin.Engine, h *handlers.Handler) {
-	acct := handlers.NewAccountHandler(h)
+func registerAccountRoutes(r *gin.Engine, handler *handlers.Handler) {
+	h := handlers.NewAccountHandler(handler)
 
 	group := r.Group("/accounts")
 
-	group.GET("{:id}", acct.Get)
-	group.POST("", acct.Create)
+	group.GET("/:id", h.Get)
+	group.POST("", h.Create)
 }
 
-func registerTransactionRoutes(r *gin.Engine, h *handlers.Handler) {
-	acct := handlers.NewTransactionHandler(h)
+func registerTransactionRoutes(r *gin.Engine, handler *handlers.Handler) {
+	h := handlers.NewTransactionHandler(handler)
 
 	group := r.Group("/transactions")
 
-	group.POST("", acct.Create)
+	group.POST("", h.Create)
 }
