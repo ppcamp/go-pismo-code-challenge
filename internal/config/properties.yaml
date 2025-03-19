@@ -2,6 +2,15 @@ app:
   port: 8080
   host: localhost
   timeout: 10s
+  cors:
+    allowed_origins:
+      - http://localhost:8080
+      - http://localhost:9090
+    allowed_methods:
+      - POST
+      - GET
+      - DELETE
+      - PUT
 
 logging:
   http_enabled: false

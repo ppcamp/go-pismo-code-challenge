@@ -2,9 +2,11 @@ package config
 
 // App related viper identifiers
 const (
-	AppPort            = "app.port"
-	AppHost            = "app.host"
-	AppShutdownTimeout = "app.timeout"
+	AppPort               = "app.port"
+	AppHost               = "app.host"
+	AppShutdownTimeout    = "app.timeout"
+	AppCorsAllowedOrigins = "app.cors.allowed_origins"
+	AppCorsAllowedMethods = "app.cors.allowed_methods"
 )
 
 // Logging related viper identifiers

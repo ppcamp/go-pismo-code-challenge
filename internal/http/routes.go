@@ -3,6 +3,7 @@ package http
 import (
 	"net/http"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/ppcamp/go-pismo-code-challenge/internal/config"
 	"github.com/ppcamp/go-pismo-code-challenge/internal/http/handlers"
@@ -26,6 +27,12 @@ func Routes(h *handlers.Handler) http.Handler {
 }
 
 func registerMiddlewares(r *gin.Engine) {
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     viper.GetStringSlice(config.AppCorsAllowedOrigins),  // Allow specific origins
+		AllowMethods:     viper.GetStringSlice(config.AppCorsAllowedOrigins),  // Allow specific methods
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"}, // Allow specific headers
+		AllowCredentials: true,                                                // Allow cookies or credentials
+	}))
 	r.Use(gin.Recovery())
 
 	if viper.GetBool(config.LoggingHttpEnabled) {
