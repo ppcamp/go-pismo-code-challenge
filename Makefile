@@ -113,7 +113,7 @@ build: ## Build the server locally
 
 lint: ## Run *linters* to this project. Remember to run `make setup_dev`
 	@echo "Running linters"
-	golangci-lint run ./...
+	go tool golangci-lint run ./...
 
 
 docker: ## Create [docker] image
@@ -137,10 +137,9 @@ revert_migrations: ## Revert a given migration, e.g `N=2 make revert_migrations`
 
 
 setup_dev: ## Install _dev_ dependencies
-	@echo "Installing go-migrate"
+	# @echo "Installing go-migrate"
+	# WARN: it can't be installed as tool, since it needs to be built
 	go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
-	@echo "Installing linters"
-	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.64.7
 
 open_swagger: ## Open page with swagger
 	open http://localhost:9090
@@ -148,7 +147,12 @@ open_swagger: ## Open page with swagger
 open_grafana: ## Open page with grafana
 	open http://localhost:3000
 
-tests: ## Run tests
+
+generate: ## Generate mocks
+	@echo "Generating mocks for package"
+	go generate ./...
+
+test: generate ## Run tests
 	go test -race ./...
 
 help:
