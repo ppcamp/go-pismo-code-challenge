@@ -17,7 +17,7 @@ type Transaction interface {
 
 type implTransaction struct{ conn db.DB }
 
-func NewTransactionService(dbconn db.DB) Transaction { return &implAccount{dbconn} }
+func NewTransactionService(dbconn db.DB) Transaction { return &implTransaction{dbconn} }
 
 func (t *implTransaction) Create(ctx context.Context, req *dtos.CreateTransaction) error {
 	log := logrus.WithContext(ctx).WithField("payload", req)
