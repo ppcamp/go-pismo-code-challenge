@@ -28,4 +28,5 @@ const (
 	DatabasePort     = "database.port"
 	DatabaseUsername = "database.username"
 	DatabasePassword = "database.password"
+	DatabaseDb       = "database.db"
 )

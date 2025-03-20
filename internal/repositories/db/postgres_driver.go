@@ -13,10 +13,12 @@ type Params struct {
 	Host           string
 	Port           int
 	User, Password string
+	DB             string
 }
 
 func (p Params) ConnStr() string {
-	return fmt.Sprintf("%s://%s:%s@%s:%d", p.Driver, p.User, p.Password, p.Host, p.Port)
+	return fmt.Sprintf("%s://%s:%s@%s:%d/%s", p.Driver, p.User,
+		p.Password, p.Host, p.Port, p.DB)
 }
 
 // New implements a postgres driver with connection pooling.

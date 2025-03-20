@@ -48,6 +48,7 @@ func main() {
 		Driver:   viper.GetString(config.DatabaseDriver),
 		User:     viper.GetString(config.DatabaseUsername),
 		Password: viper.GetString(config.DatabasePassword),
+		DB:       viper.GetString(config.DatabaseDb),
 	})
 	if err != nil {
 		logrus.WithError(err).Fatal("fail to connect to db: %w", err)

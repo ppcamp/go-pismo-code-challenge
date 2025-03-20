@@ -18,7 +18,7 @@ func NewTransactions(conn db.Driver) Transactions { return &implTransactions{con
 
 func (t *implTransactions) Create(ctx context.Context, data *models.Transaction) error {
 	const query = `
-		INSERT INTO transactions (account_id, operation_type_id, amount) 
+		INSERT INTO pismo.transactions (account_id, operation_type_id, amount) 
 		VALUES ($1, $2, $3)`
 
 	err := t.conn.Exec(ctx, query, data.AccountId, data.OperationId, data.Amount)

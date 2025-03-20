@@ -20,7 +20,7 @@ type implAccount struct{ conn db.Driver }
 func NewAccount(conn db.Driver) Account { return &implAccount{conn} }
 
 func (t *implAccount) Create(ctx context.Context, data *models.Account) error {
-	const query = `INSERT INTO accounts(document_number) VALUES ($1)`
+	const query = `INSERT INTO pismo.accounts(document_number) VALUES ($1)`
 
 	err := t.conn.Exec(ctx, query, data.DocumentNumber)
 	if err != nil {
@@ -31,7 +31,7 @@ func (t *implAccount) Create(ctx context.Context, data *models.Account) error {
 }
 
 func (t *implAccount) Get(ctx context.Context, id int64) (*models.Account, error) {
-	const query = `SELECT id, document_number FROM accounts WHERE id = $1`
+	const query = `SELECT id, document_number FROM pismo.accounts WHERE id = $1`
 
 	row := t.conn.QueryRow(ctx, query, id)
 
