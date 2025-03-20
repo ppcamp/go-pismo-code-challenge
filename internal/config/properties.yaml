@@ -8,9 +8,10 @@ app:
   timeout: 10s
   cors:
     allowed_origins:
-      # - "*"
-      - http://localhost:9090
-      # - http://localhost:8080
+      # allow everything to be able to connect to wsl docker swagger
+      - "*"
+      # - "http://localhost:9090"
+      # - "http://localhost:8080"
     allowed_methods:
       # - "*"
       - POST
@@ -22,9 +23,9 @@ app:
       - OPTIONS
     allowed_headers:
       # - "*"
-      - Origin
-      - Content-Type
-      - Authorization
+      - "Origin"
+      - "Content-Type"
+      - "Authorization"
 
 logging:
   level: debug
