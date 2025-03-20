@@ -145,6 +145,12 @@ setup_dev: ## Install _dev_ dependencies
 open_swagger: ## Open page with swagger
 	open http://localhost:9090
 
+open_grafana: ## Open page with grafana
+	open http://localhost:3000
+
+tests: ## Run tests
+	go test -race ./...
+
 help:
 	@printf "$(FF) Available methods: $(LD)\n\n"
     # 1. read makefile

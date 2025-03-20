@@ -25,4 +25,7 @@ Alternativaly, you can run the production config: `make up_env`
 > You can check the API doc at `./build` folder or, after setup the local env,
 > at http://localhost:9090. See also [swagger-editor]
 
+The server also contains an otel stack configured, that can be accessed at
+http://localhost:3000
+
 [swagger-editor]: https://editor.swagger.io/
