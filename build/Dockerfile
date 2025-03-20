@@ -1,14 +1,21 @@
-FROM golang:1.24 as builder
+FROM golang:1.24.1-alpine as builder
 
 RUN mkdir /build
 WORKDIR /build
 
-ADD . /build/
+COPY . . 
 
-RUN apk update && \
-    apk upgrade && \
-    apk add --no-cache musl-dev gcc build-base libc-dev ca-certificates wget
+RUN apk update && apk upgrade && \
+    apk add --no-cache \
+    musl-dev \
+    gcc \
+    build-base \
+    libc-dev \
+    ca-certificates \
+    wget
 
+
+RUN ls /build
 RUN go mod download
 
 RUN CGO_ENABLED=0 GOOS=linux go build -a -o /build/application cmd/*.go
@@ -20,8 +27,7 @@ FROM alpine:latest
 
 RUN apk update && \
     apk upgrade && \
-    apk add --no-cache && \
-    apk add ca-certificates && \
+    apk add --no-cache ca-certificates && \
     tzdata ca-certificates && \
     cp /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime; \
     echo "America/Sao_Paulo" > /etc/timezone

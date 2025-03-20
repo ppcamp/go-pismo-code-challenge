@@ -1,4 +1,15 @@
 services:
+  api:
+    container_name: pismo_service
+    build:
+      context: ../
+      dockerfile: build/Dockerfile
+    ports:
+      - "8081:8080"
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
+      - SERVICE_NAME=go-pismo-challenge
+
   database:
     image: postgres:16
     container_name: postgres
@@ -13,6 +24,7 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   openapi:
+    container_name: swagger_api
     image: swaggerapi/swagger-ui
     restart: always
     ports:
@@ -24,6 +36,7 @@ services:
 
   otel:
     # https://github.com/grafana/docker-otel-lgtm/
+    container_name: otel_stack
     image: grafana/otel-lgtm
     restart: always
     ports:

@@ -98,7 +98,7 @@ IMAGE=ppcamp/go-microservice-authentication:${TAG}
 
 
 up: ## Run docker compose
-	docker compose --file tools/docker-compose.yaml up -d  
+	docker compose --file tools/docker-compose.yaml up -d --force-recreate --build
 
 down: ## Remove docker compose containers
 	docker compose --file tools/docker-compose.yaml down -v
