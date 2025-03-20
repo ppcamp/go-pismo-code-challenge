@@ -108,7 +108,7 @@ run: ## **Run** the server
 
 
 build: ## Build the server locally
-	go build -race cmd/main.go
+	go build -a -o dist/main cmd/main.go
 
 
 lint: ## Run *linters* to this project. Remember to run `make setup_dev`
@@ -152,7 +152,7 @@ generate: ## Generate mocks
 	@echo "Generating mocks for package"
 	go generate ./...
 
-test: generate ## Run tests
+test: ## Run tests. See `make generate`
 	go test -race ./...
 
 help:
