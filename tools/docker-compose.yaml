@@ -1,6 +1,7 @@
 services:
   api:
     container_name: pismo_service
+    restart: unless-stopped
     build:
       context: ../
       dockerfile: build/Dockerfile
@@ -12,7 +13,7 @@ services:
 
   database:
     image: postgres:16
-    container_name: postgres
+    container_name: unless-stopped
     restart: always
     environment:
       POSTGRES_USER: pguser
@@ -26,7 +27,7 @@ services:
   openapi:
     container_name: swagger_api
     image: swaggerapi/swagger-ui
-    restart: always
+    restart: unless-stopped
     ports:
       - "9090:8080"
     volumes:
