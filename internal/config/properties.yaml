@@ -8,13 +8,23 @@ app:
   timeout: 10s
   cors:
     allowed_origins:
-      - http://localhost:8080
+      # - "*"
       - http://localhost:9090
+      # - http://localhost:8080
     allowed_methods:
+      # - "*"
       - POST
       - GET
       - DELETE
       - PUT
+      - PATCH
+      - HEAD
+      - OPTIONS
+    allowed_headers:
+      # - "*"
+      - Origin
+      - Content-Type
+      - Authorization
 
 logging:
   level: debug

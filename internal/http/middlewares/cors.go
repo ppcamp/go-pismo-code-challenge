@@ -8,11 +8,13 @@ import (
 )
 
 func Cors() gin.HandlerFunc {
-	return cors.New(cors.Config{
-		AllowOrigins:     viper.GetStringSlice(config.AppCorsAllowedOrigins),  // Allow specific origins
-		AllowMethods:     viper.GetStringSlice(config.AppCorsAllowedOrigins),  // Allow specific methods
-		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"}, // Allow specific headers
-		AllowCredentials: true,                                                // Allow cookies or credentials
-	})
+	c := cors.Config{
+		AllowOrigins:     viper.GetStringSlice(config.CorsAllowedOrigins), // Allow specific origins
+		AllowMethods:     viper.GetStringSlice(config.CorsAllowedOrigins), // Allow specific methods
+		AllowHeaders:     viper.GetStringSlice(config.CorsAllowedHeaders), // Allow specific headers
+		AllowCredentials: true,                                            // Allow cookies or credentials
+	}
+
+	return cors.New(c)
 
 }
