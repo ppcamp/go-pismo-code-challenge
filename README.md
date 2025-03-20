@@ -1,6 +1,16 @@
 # go-pismo-code-challenge
 
 
+## TODO
+
+- implement test for transactions
+- implement httptest layer
+
+
+## Development
+
+Type `make lint` or `make generate` (required to generate mocks for tests)
+
 ## Tools
 
 To create migrations on your machine, or use other extra tools, you can just
