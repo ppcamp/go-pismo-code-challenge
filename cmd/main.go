@@ -8,6 +8,7 @@ import (
 	"github.com/ppcamp/go-pismo-code-challenge/internal/config"
 	"github.com/ppcamp/go-pismo-code-challenge/internal/http"
 	"github.com/ppcamp/go-pismo-code-challenge/internal/http/handlers"
+	"github.com/ppcamp/go-pismo-code-challenge/internal/repositories"
 	"github.com/ppcamp/go-pismo-code-challenge/internal/repositories/db"
 	"github.com/ppcamp/go-pismo-code-challenge/internal/services"
 	"github.com/ppcamp/go-pismo-code-challenge/pkg/metrics"
@@ -56,8 +57,8 @@ func main() {
 	defer db.Close(ctx)
 
 	h := &handlers.Handler{
-		Account:     services.NewAccountService(db),
-		Transaction: services.NewTransactionService(db),
+		Account:     services.NewAccountService(db, repositories.NewAccount()),
+		Transaction: services.NewTransactionService(db, repositories.NewTransactions()),
 	}
 
 	err = http.Serve(ctx, h)

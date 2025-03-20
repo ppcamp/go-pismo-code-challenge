@@ -4,10 +4,10 @@ import (
 	"context"
 )
 
-// Drivers interfaces are just wrappers, since the default database/sql is a
-// type, and I plan to keep it detached as possible to different drivers. And
-// by doing so, if I choose to change the database, I just need to reimplement
-// the required driver wrapper to match the defined interfaces here.
+//go:generate -command mockgen go tool mockgen
+
+//go:generate mockgen -destination=mock/row.go . Row,Rows
+//go:generate mockgen -destination=mock/driver.go . Driver,DriverTransaction,DB
 
 type Row interface {
 	// Scan works the same as Rows. with the following exceptions. If no
@@ -41,6 +41,10 @@ type Rows interface {
 	Row
 }
 
+// Drivers interfaces are just wrappers, since the default database/sql is a
+// type, and I plan to keep it detached as possible to different drivers. And
+// by doing so, if I choose to change the database, I just need to reimplement
+// the required driver wrapper to match the defined interfaces here.
 type Driver interface {
 	Exec(ctx context.Context, query string, args ...any) error
 	Query(ctx context.Context, query string, args ...any) (Rows, error)

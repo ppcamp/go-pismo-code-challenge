@@ -15,9 +15,14 @@ type Transaction interface {
 	Create(ctx context.Context, req *dtos.CreateTransaction) error
 }
 
-type implTransaction struct{ conn db.DB }
+type implTransaction struct {
+	conn db.DB
+	repo repositories.Transactions
+}
 
-func NewTransactionService(dbconn db.DB) Transaction { return &implTransaction{dbconn} }
+func NewTransactionService(dbconn db.DB, repo repositories.Transactions) Transaction {
+	return &implTransaction{dbconn, repo}
+}
 
 func (t *implTransaction) Create(ctx context.Context, req *dtos.CreateTransaction) error {
 	log := logrus.WithContext(ctx).WithField("payload", req)
@@ -30,10 +35,8 @@ func (t *implTransaction) Create(ctx context.Context, req *dtos.CreateTransactio
 
 	log.Info("trying to create transactions")
 	return db.Transaction(ctx, t.conn, func(ctx context.Context, db db.DriverTransaction) error {
-		repo := repositories.NewTransactions(db)
-
 		log.Info("inserting transaction into database")
-		err := repo.Create(ctx, pl)
+		err := t.repo.Create(ctx, db, pl)
 		if err != nil {
 			log.WithError(err).Error("fail to create transaction")
 			return fmt.Errorf("fail to create account: %w", err)

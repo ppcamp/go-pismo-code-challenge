@@ -16,9 +16,14 @@ type Account interface {
 	Get(ctx context.Context, id int64) (*dtos.Account, error)
 }
 
-type implAccount struct{ conn db.DB }
+type implAccount struct {
+	conn db.DB
+	repo repositories.Account
+}
 
-func NewAccountService(dbconn db.DB) Account { return &implAccount{dbconn} }
+func NewAccountService(dbconn db.DB, repo repositories.Account) Account {
+	return &implAccount{dbconn, repo}
+}
 
 func (t *implAccount) Create(ctx context.Context, req *dtos.CreateAccount) error {
 	log := logrus.WithContext(ctx).WithField("payload", req)
@@ -27,11 +32,9 @@ func (t *implAccount) Create(ctx context.Context, req *dtos.CreateAccount) error
 
 	log.Info("creating account")
 	return db.Transaction(ctx, t.conn, func(ctx context.Context, db db.DriverTransaction) error {
-		repo := repositories.NewAccount(db)
-
 		log.Info("inserting account into db")
 
-		err := repo.Create(ctx, pl)
+		err := t.repo.Create(ctx, db, pl)
 		if err != nil {
 			log.WithError(err).Error("fail to create account")
 			return fmt.Errorf("fail to create account: %w", err)
@@ -45,10 +48,8 @@ func (t *implAccount) Create(ctx context.Context, req *dtos.CreateAccount) error
 func (t *implAccount) Get(ctx context.Context, id int64) (*dtos.Account, error) {
 	log := logrus.WithContext(ctx).WithField("account_id", id)
 
-	repo := repositories.NewAccount(t.conn)
-
 	log.Info("fetching account")
-	acct, err := repo.Get(ctx, id)
+	acct, err := t.repo.Get(ctx, t.conn, id)
 	if err == nil {
 		log.Info("account fetched successfuly")
 		return &dtos.Account{Id: acct.Id, DocumentNumber: acct.DocumentNumber}, nil
