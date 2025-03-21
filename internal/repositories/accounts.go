@@ -21,6 +21,8 @@ type Account interface {
 	// rollback if necessary.
 	Create(ctx context.Context, conn db.Driver, account *models.Account) error
 	Get(ctx context.Context, conn db.Driver, id int64) (*models.Account, error)
+	GetLimits(ctx context.Context, conn db.Driver, id int64) (*models.AccountLimit, error)
+	UpdateLimits(ctx context.Context, conn db.Driver, id int64, newLimits *models.AccountLimit) error
 }
 
 type implAccount struct{}
@@ -54,4 +56,34 @@ func (t *implAccount) Get(ctx context.Context, conn db.Driver, id int64) (*model
 	}
 
 	return &acct, nil
+}
+
+func (t *implAccount) GetLimits(ctx context.Context, conn db.Driver, id int64) (*models.AccountLimit, error) {
+	const query = `SELECT current_limit, available_limit FROM pismo.accounts WHERE id = $1`
+
+	row := conn.QueryRow(ctx, query, id)
+
+	var acct models.AccountLimit
+	err := row.Scan(&acct.CurrentLimit, &acct.AvailableLimit)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, errutils.Error{Base: db.ErrNotFound, Wrapped: err}
+		}
+
+		return nil, errutils.Error{Base: db.ErrDriverError, Wrapped: err}
+	}
+
+	return &acct, nil
+}
+
+func (t *implAccount) UpdateLimits(ctx context.Context, conn db.Driver, id int64, limits *models.AccountLimit) error {
+	const query = `UPDATE pismo.accounts 
+		SET available_limit=$3, current_limit=$2
+		WHERE id = $1`
+
+	err := conn.Exec(ctx, query, id, limits.AvailableLimit, limits.CurrentLimit)
+	if err != nil {
+		return errutils.Error{Base: db.ErrDriverError, Wrapped: err}
+	}
+	return nil
 }

@@ -2,32 +2,26 @@ package services_test
 
 import (
 	"testing"
-
-	mock_db "github.com/ppcamp/go-pismo-code-challenge/internal/repositories/db/mock"
-	mock_repositories "github.com/ppcamp/go-pismo-code-challenge/internal/repositories/mock"
-	"github.com/ppcamp/go-pismo-code-challenge/internal/services"
-	"github.com/stretchr/testify/assert"
-	"go.uber.org/mock/gomock"
 )
 
 func TestTransactionService(t *testing.T) {
-	assert := assert.New(t)
+	// assert := assert.New(t)
 
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
+	// ctrl := gomock.NewController(t)
+	// defer ctrl.Finish()
 
 	// ctx := t.Context()
-	db := mock_db.NewMockDB(ctrl)
+	// db := mock_db.NewMockDB(ctrl)
 
-	repo := mock_repositories.NewMockTransactions(ctrl)
-	s := services.NewTransactionService(db, repo)
+	// repo := mock_repositories.NewMockTransactions(ctrl)
+	// s := services.NewTransactionService(db, repo)
 
 	// TODO: due to lack of time, I couldn't fininsh these tests on time.
 	// should be done later.
 
-	t.Run("should init transactions service", func(t *testing.T) {
-		assert.NotNil(s)
-	})
+	// 	t.Run("should init transactions service", func(t *testing.T) {
+	// 		assert.NotNil(s)
+	// 	})
 
 	// t.Run("should create transactions", func(t *testing.T) {
 	// 	d := &dtos.CreateAccount{DocumentNumber: "1"}

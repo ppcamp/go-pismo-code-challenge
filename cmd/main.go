@@ -56,9 +56,10 @@ func main() {
 	}
 	defer db.Close(ctx)
 
+	acctService := services.NewAccountService(db, repositories.NewAccount())
 	h := &handlers.Handler{
-		Account:     services.NewAccountService(db, repositories.NewAccount()),
-		Transaction: services.NewTransactionService(db, repositories.NewTransactions()),
+		Account:     acctService,
+		Transaction: services.NewTransactionService(db, repositories.NewTransactions(), acctService),
 	}
 
 	err = http.Serve(ctx, h)

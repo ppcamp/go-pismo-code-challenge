@@ -45,6 +45,8 @@ func registerAccountRoutes(r *gin.Engine, handler *handlers.Handler) {
 
 	group := r.Group("/accounts")
 
+	group.GET("/limit/:id", h.GetLimits)
+	group.POST("/limit/:id", h.GetLimits)
 	group.GET("/:id", h.Get)
 	group.POST("", h.Create)
 }
